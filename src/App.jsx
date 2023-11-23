@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const App = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(
+    JSON.parse(localStorage.getItem("lorem-state")) || false
+  );
 
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    localStorage.setItem("lorem-state", JSON.stringify(isOpen));
+  }, [isOpen]);
 
   return (
     <div>
