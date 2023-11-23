@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from "react";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 const App = () => {
-  const [isOpen, setIsOpen] = useState(
-    JSON.parse(localStorage.getItem("lorem-state")) || false
-  );
+  const [isOpen, setIsOpen] = useLocalStorage("lorem-state", false);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
-
-  useEffect(() => {
-    localStorage.setItem("lorem-state", JSON.stringify(isOpen));
-  }, [isOpen]);
 
   return (
     <div>
