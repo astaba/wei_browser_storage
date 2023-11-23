@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+import useLocalStorage from "./hooks/useLocalStorage";
+
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 const INITIAL_QUERY = "react";
 
 const App = () => {
   const [data, setData] = useState({ hits: [] });
-  const [query, setQuery] = useState(INITIAL_QUERY);
-  const [url, setUrl] = useState(`${API_ENDPOINT}${INITIAL_QUERY}`);
+  const [query, setQuery] = useLocalStorage("cached-query", INITIAL_QUERY);
+  const [url, setUrl] = useState(`${API_ENDPOINT}${query}`);
 
   const handleQueryChange = (e) => {
     setQuery(e.target.value);
