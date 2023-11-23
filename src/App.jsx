@@ -1,24 +1,48 @@
-import useLocalStorage from "./hooks/useLocalStorage";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
+const INITIAL_QUERY = "react";
 
 const App = () => {
-  const [isOpen, setIsOpen] = useLocalStorage("lorem-state", false);
+  const [data, setData] = useState({ hits: [] });
+  const [query, setQuery] = useState(INITIAL_QUERY);
+  const [url, setUrl] = useState(`${API_ENDPOINT}${INITIAL_QUERY}`);
 
-  const handleClick = () => {
-    setIsOpen(!isOpen);
+  const handleQueryChange = (e) => {
+    setQuery(e.target.value);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setUrl(`${API_ENDPOINT}${query}`);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios(url);
+      // console.log(result);
+
+      setData({ hits: result.data.hits });
+    };
+
+    fetchData();
+  }, [url]);
 
   return (
     <div>
-      <button type="button" onClick={handleClick}>
-        Toggle
-      </button>
-      {isOpen && (
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo tenetur
-          rerum, non commodi aut nostrum officia quas totam eligendi nobis
-          optio, voluptatibus illo, eius iure. Vel repudiandae porro atque
-          consequatur.
-        </p>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={query} onChange={handleQueryChange} />
+        <button>Search</button>
+      </form>
+      {data.hits.length > 0 && (
+        <ul>
+          {data.hits.map((item) => (
+            <li key={item.objectID}>
+              <a href={item.url}>{item.title}</a>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
